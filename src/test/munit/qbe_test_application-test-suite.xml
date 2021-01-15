@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:munit="http://www.mulesoft.org/schema/mule/munit" xmlns:munit-tools="http://www.mulesoft.org/schema/mule/munit-tools"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xsi:schemaLocation="
+		http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+		http://www.mulesoft.org/schema/mule/munit http://www.mulesoft.org/schema/mule/munit/current/mule-munit.xsd
+		http://www.mulesoft.org/schema/mule/munit-tools  http://www.mulesoft.org/schema/mule/munit-tools/current/mule-munit-tools.xsd">
+	<munit:config name="qbe_test_application-test-suite.xml" />
+	<munit:test name="qbe_test_application-test-suite-get:\validate:qbe_test_application-configTest" doc:id="ddf1d4c9-d8f5-429f-8ca4-ea081f695730" description="Test">
+		<munit:execution >
+			<munit:set-event doc:name="Set Event" doc:id="4f21632c-e4a7-4155-85ef-ca72846cffb8" >
+				<munit:attributes value="#[{queryParams:{number:'0414225354' ,country_code: &quot;AU&quot;,format:1,access_key:&quot;89d9c74e4a63e76f9aa7cd9afebfa633&quot;}}]" />
+			</munit:set-event>
+			<flow-ref doc:name="Flow-ref to get:\validate:qbe_test_application-config" doc:id="fcf45308-9596-4ede-8016-8be4351ae8bf" name="get:\validate:qbe_test_application-config"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert-that doc:name="Assert that" doc:id="19fbfaaf-b0f2-416a-9a40-7951ef2eda47" expression="#[payload.valid]" is="#[MunitTools::equalTo(true)]"/>
+		</munit:validation>
+	</munit:test>
+
+
+</mule>
