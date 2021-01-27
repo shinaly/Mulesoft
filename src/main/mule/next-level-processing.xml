@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd">
+	<sub-flow name="next-level-processing-first-sub-folw" doc:id="4f41705d-b16d-4d66-91b5-09a8b99ac0bf" >
+		<set-payload value="#['next-level-processing-first']" doc:name="Set Payload" doc:id="43da17fe-575d-4952-b11c-1ff847a36192" />
+	</sub-flow>
+	<sub-flow name="next-level-processing-second-sub-folw" doc:id="66ba8dd2-3d79-46f2-b49a-c4968cfa82a0" >
+		<set-payload value="#['next-level-processing-second']" doc:name="Set Payload" doc:id="5b7258fa-132c-4b53-a836-180a89d28ca2" />
+	</sub-flow>
+</mule>

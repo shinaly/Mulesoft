@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="456d3314-27f3-47e0-bb96-ab6c95584a5e">
+		<http:listener-connection host="0.0.0.0" port="8081" />
+	</http:listener-config>
+	<flow name="run-single-munitFlow" doc:id="2847cea2-f3b0-480f-ae7e-16208e6c260b" >
+		<http:listener doc:name="Listener" doc:id="24a0b71e-ff2b-44ae-a28b-cb47c4399db0" config-ref="HTTP_Listener_config" path="/test"/>
+		<set-payload value="#['Hello from Manish']" doc:name="Set Payload" doc:id="2e0f0c93-9777-424c-9824-e17e81c05a25" />
+		<logger level="INFO" doc:name="Logger" doc:id="cdf491c0-0c3b-4951-8893-a4678264dcf2" message="#[payload]"/>
+	</flow>
+	<sub-flow name="run-single-sub-flow" doc:id="4250e1b2-84aa-47bc-8f7e-5a8eff0293ae" >
+		<logger level="INFO" doc:name="Logger" doc:id="34ce13a0-db14-4050-8399-61d61bf84876" />
+	</sub-flow>
+</mule>

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:munit="http://www.mulesoft.org/schema/mule/munit" xmlns:munit-tools="http://www.mulesoft.org/schema/mule/munit-tools"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xsi:schemaLocation="
+		http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+		http://www.mulesoft.org/schema/mule/munit http://www.mulesoft.org/schema/mule/munit/current/mule-munit.xsd
+		http://www.mulesoft.org/schema/mule/munit-tools  http://www.mulesoft.org/schema/mule/munit-tools/current/mule-munit-tools.xsd">
+	<munit:config name="next-level-processing-test-suite.xml" />
+	<munit:test name="next-level-processing-test-suite-next-level-processing-firstTest" tags="sub-flow" doc:id="53e2db05-354f-4420-a8a4-4e834a7d93e4" description="Test">
+		<munit:execution >
+			<flow-ref doc:name="next-level-processing-first-sub-folw" doc:id="483fb4f0-efc1-4b50-816f-a68a815c42a3" name="next-level-processing-first-sub-folw"/>
+		</munit:execution>
+	</munit:test>
+	<munit:test name="next-level-processing-test-suite-next-level-processing-secondTest" tags="sub-flow" doc:id="56f1187f-90ac-4aff-ac13-d8604edc962c" description="Test">
+		<munit:execution >
+			<flow-ref doc:name="next-level-processing-second-sub-folw" doc:id="d1642795-04a4-4155-9fc6-e46ba4abdad7" name="next-level-processing-second-sub-folw"/>
+		</munit:execution>
+	</munit:test>
+
+
+</mule>

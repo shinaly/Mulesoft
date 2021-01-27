@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:munit="http://www.mulesoft.org/schema/mule/munit" xmlns:munit-tools="http://www.mulesoft.org/schema/mule/munit-tools"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xsi:schemaLocation="
+		http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+		http://www.mulesoft.org/schema/mule/munit http://www.mulesoft.org/schema/mule/munit/current/mule-munit.xsd
+		http://www.mulesoft.org/schema/mule/munit-tools  http://www.mulesoft.org/schema/mule/munit-tools/current/mule-munit-tools.xsd">
+	<munit:config name="run-single-munit-test-suite.xml" />
+	<munit:test tags="flow" doc:name="flow-test" name="run-single-munit-test-suite-run-single-munitFlowTest" doc:id="b14b868d-e5f9-49fe-9b20-db056972cdb2" description="Test">
+		<munit:execution >
+			<flow-ref doc:name="run-single-munitFlow" doc:id="82371047-cd4e-48af-ac95-9805d689a48d" name="run-single-munitFlow"/>
+		</munit:execution>
+	</munit:test>
+	<munit:test name="run-single-munit-test-suite-run-single-sub-flowTest" doc:name="sub-flow-test" doc:id="c7a12648-aa01-4498-b4b0-01869afb8ac5" description="Test" tags="sub-flow">
+		<munit:execution >
+			<flow-ref doc:name="run-single-sub-flow" doc:id="cd4270f0-08cc-4506-9fc6-50887b436d34" name="run-single-sub-flow"/>
+		</munit:execution>
+	</munit:test>
+
+
+</mule>
