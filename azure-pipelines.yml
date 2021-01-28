@@ -18,8 +18,8 @@ stages:
 - ${{ if eq(variables.build, 'maven') }}:
   - template: pattern-java-maven-package.yml@templates
     parameters:
-      buildToPublish: '**/*.class'
-      packageToPublish: '**/*.war'
+      buildToPublish: '**/*'
+      packageToPublish: '**/*.jar'
       fortifyAppName: 'java-test'
       fortifyAppVersion: '1.1'
       mvnCmdOptions: '-DruntimeProduct=MULE'
