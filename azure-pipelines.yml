@@ -1,28 +1,25 @@
-# Maven
-# Build your Java project and run tests with Apache Maven.
-# Add steps that analyze code, save build artifacts, deploy, and more:
-# https://docs.microsoft.com/azure/devops/pipelines/languages/java
+variables:
+  build: 'maven'
+  vmImage: 'ubuntu-latest'
+  pkgFeed: 'Playground/mule-demo'
+  buildArtifactName: 'drop'
 
 trigger:
 - master
 
-pool:
-  vmImage: 'ubuntu-latest'
-variables:
-- name: MAVEN_CACHE_FOLDER
-  value: $(Pipeline.Workspace)/.m2/repository
-- name: MAVEN_OPTS
-  value: '-Dmaven.repo.local=$(MAVEN_CACHE_FOLDER)'
-steps:
-- task: Maven@3
-  inputs:
-    mavenPomFile: 'pom.xml'
-    mavenOptions: '-Xmx3072m'
-    javaHomeOption: 'JDKVersion'
-    jdkVersionOption: '1.8'
-    jdkArchitectureOption: 'x64'
-    options: '-DruntimeProduct=MULE'
-    publishJUnitResults: true
-    testResultsFiles: '**/surefire-reports/TEST-*.xml'
-    goals: 'clean install package $(MAVEN_OPTS)'
+resources:
+  repositories:
+  - repository: templates
+    name: "Playground/pattern-library"
+    type: git
+    ref: rev
 
+stages:
+- ${{ if eq(variables.build, 'maven') }}:
+  - template: pattern-java-maven-package.yml@templates
+    parameters:
+      buildToPublish: '**/*.class'
+      packageToPublish: '**/*.war'
+      fortifyAppName: 'java-test'
+      fortifyAppVersion: '1.1'
+      mvnCmdOptions: '-DruntimeProduct=MULE'
