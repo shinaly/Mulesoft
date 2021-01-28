@@ -22,4 +22,4 @@ stages:
       packageToPublish: '**/*.jar'
       fortifyAppName: 'java-test'
       fortifyAppVersion: '1.1'
-      mvnCmdOptions: '-DruntimeProduct=MULE'
+      mvnCmdOptions: '-DruntimeProduct=MULE -Dmaven.repo.local=$(Pipeline.Workspace)/.m2/repository'

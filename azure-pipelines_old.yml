@@ -12,7 +12,7 @@ variables:
 - name: MAVEN_CACHE_FOLDER
   value: $(Pipeline.Workspace)/.m2/repository
 - name: MAVEN_OPTS
-  value: '-Dmaven.repo.local=$(MAVEN_CACHE_FOLDER)'
+  value: '-Dmaven.repo.local=$(Pipeline.Workspace)/.m2/repository'
 steps:
 - task: Maven@3
   inputs:
@@ -21,7 +21,7 @@ steps:
     javaHomeOption: 'JDKVersion'
     jdkVersionOption: '1.8'
     jdkArchitectureOption: 'x64'
-    options: '-DruntimeProduct=MULE'
+    options: '-DruntimeProduct=MULE '
     publishJUnitResults: true
     testResultsFiles: '**/surefire-reports/TEST-*.xml'
     goals: 'clean install package $(MAVEN_OPTS) '
