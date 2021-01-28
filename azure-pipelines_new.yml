@@ -1,0 +1,25 @@
+variables:
+  build: 'maven'
+  vmImage: 'ubuntu-latest'
+  pkgFeed: 'Playground/java-demo'
+  buildArtifactName: 'drop'
+
+trigger:
+- master
+
+resources:
+  repositories:
+  - repository: templates
+    name: "Playground/pattern-library"
+    type: git
+    ref: rev
+
+stages:
+- ${{ if eq(variables.build, 'maven') }}:
+  - template: pattern-java-maven-package.yml@templates
+    parameters:
+      buildToPublish: '**/*.class'
+      packageToPublish: '**/*.war'
+      fortifyAppName: 'java-test'
+      fortifyAppVersion: '1.1'
+      mvnCmdOptions: '-DruntimeProduct=MULE'

@@ -21,6 +21,9 @@ steps:
     javaHomeOption: 'JDKVersion'
     jdkVersionOption: '1.8'
     jdkArchitectureOption: 'x64'
+    options: '-DruntimeProduct=MULE'
     publishJUnitResults: true
     testResultsFiles: '**/surefire-reports/TEST-*.xml'
-    goals: 'clean install package $(MAVEN_OPTS) -DskipTests'
+    goals: 'clean install package $(MAVEN_OPTS)'
+    
+    

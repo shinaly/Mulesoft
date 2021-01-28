@@ -18,7 +18,7 @@
 
 		<app.runtime>4.2.1</app.runtime>
 		<mule.maven.plugin.version>3.3.5</mule.maven.plugin.version>
-	<munit.version>2.3.1</munit.version>
+	<munit.version>2.3.2</munit.version>
     </properties>
 
 	<build>
@@ -36,6 +36,26 @@
 				<configuration>
 				</configuration>
 			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-report-plugin</artifactId>
+				<version>2.4.2</version>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-checkstyle-plugin</artifactId>
+				<version>2.5</version>
+				<configuration>
+				<configLocation>http://mulesoft.org/download/attachments/92/checkstyle.xml?version=1</configLocation>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-pmd-plugin</artifactId>
+				<version>2.5</version>
+			</plugin>
+
 		<plugin>
                 <groupId>com.mulesoft.munit.tools</groupId>
                 <artifactId>munit-maven-plugin</artifactId>
@@ -46,16 +66,22 @@
                         <phase>test</phase>
                         <goals>
                             <goal>test</goal>
-                            <goal>coverage-report</goal>
+                             <goal>coverage-report</goal>
                         </goals>
                     </execution>
                 </executions>
                 <configuration>
                     <coverage>
                         <runCoverage>true</runCoverage>
-                        <formats>
-                            <format>html</format>
-                        </formats>
+                        <failBuild>false</failBuild>
+                         <requiredApplicationCoverage>75</requiredApplicationCoverage>
+            <requiredResourceCoverage>50</requiredResourceCoverage>
+            <requiredFlowCoverage>50</requiredFlowCoverage>
+                       <formats>
+                
+                <format>html</format>
+                <format>json</format>
+            </formats>
                     </coverage>
                 </configuration>
             </plugin>
@@ -89,13 +115,13 @@
     	<dependency>
             <groupId>com.mulesoft.munit</groupId>
             <artifactId>munit-runner</artifactId>
-            <version>2.3.1</version>
+            <version>2.3.2</version>
             <classifier>mule-plugin</classifier>
             <scope>test</scope>
         </dependency>	<dependency>
             <groupId>com.mulesoft.munit</groupId>
             <artifactId>munit-tools</artifactId>
-            <version>2.3.1</version>
+            <version>2.3.2</version>
             <classifier>mule-plugin</classifier>
             <scope>test</scope>
         </dependency>
