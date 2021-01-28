@@ -25,5 +25,4 @@ steps:
     publishJUnitResults: true
     testResultsFiles: '**/surefire-reports/TEST-*.xml'
     goals: 'clean install package $(MAVEN_OPTS)'
-    
-    
+
