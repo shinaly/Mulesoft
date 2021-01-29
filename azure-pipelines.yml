@@ -1,7 +1,7 @@
 variables:
   build: 'maven'
   vmImage: 'ubuntu-latest'
-  pkgFeed: 'Playground/mule-demo'
+  pkgFeed: 'Playground/java-demo'
   buildArtifactName: 'drop'
 
 trigger:
