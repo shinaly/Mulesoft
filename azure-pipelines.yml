@@ -3,8 +3,20 @@ variables:
   vmImage: 'ubuntu-latest'
   pkgFeed: 'Playground/java-demo'
   buildArtifactName: 'drop'
+  
+  #Maven options
   mvnTestOptions: '-DruntimeProduct=MULE'
+  mvnCompileOptions: '-DruntimeProduct=MULE'
   mvnPkgOptions: '-DskipTests=true'
+  buildToPublish: '**/*'
+  packageToPublish: '**/*.jar'
+  mvnTestResultsFiles: '**/TEST-*.xml'
+  
+  #Fortify options
+  fortifyAppName: 'java-test'
+  fortifyAppVersion: '1.1'
+  fortifyBuildId: $(Build.BuildId)
+  fortifySourceVersion: '8'
   
 parameters:
 - name: jdkVersion #x where version is 1.x
@@ -16,67 +28,6 @@ parameters:
     - 8 #preinstalled
     - 11 #preinstalled
     - 12 #preinstalled
-- name: mvnCmdOptions #command line options
-  type: string
-  default: ''
-- name: buildToPublish
-  type: string
-- name: mvnTestResultsFiles
-  type: string
-  default: '**/TEST-*.xml'
-- name: mvnTestRunTitle
-  type: string
-  default: ''
-- name: fortifyBuildId
-  type: string
-  default: $(Build.BuildId)
-- name: fortifyCustomRules
-  type: string
-  default: ''
-- name: fortifyScanParams
-  type: string
-  default: '' #scan command line args
-- name: fortifyBuildAnalyzerParams
-  type: string
-  default: '' #build options
-- name: fortifyClassPath #java only
-  type: string
-  default: ''
-- name: fortifySourceVersion
-  type: string
-  default: '8'
-- name: fortifySourcePath
-  type: string
-  default: ''
-- name: fortifyBuildOptions
-  type: string
-  default: ''
-- name: fortifySourceTranslate
-  type: string
-  default: ''
-- name: fortifyOtherTranslate
-  type: string
-  default: ''
-- name: fortifyAppName
-  type: string
-  default: ''
-- name: fortifyAppVersion
-  type: string
-  default: ''
-- name: fortifySscProxyUrl
-  type: string
-  default: ''
-- name: fortifySscProxyUser
-  type: string
-  default: ''
-- name: fortifySscProxyPass
-  type: string
-  default: ''
-- name: whitesourceArgs #add commandline arguments ie -d directory/to/scan (defaults to pwd)
-  type: string
-  default: ''
-- name: packageToPublish
-  type: string
 
 stages:
 - stage: buildApplication
@@ -94,10 +45,10 @@ stages:
     - template: /templates/java-maven/step-compile.yml
       parameters:
         jdkVersion: ${{ parameters.jdkVersion }}
-        options: ${{ parameters.mvnCmdOptions }}
+        options: $(mvnCompileOptions)
     - template: /templates/generic/step-publish-pipeline-artifact.yml          
       parameters:
-        toPublish: ${{ parameters.buildToPublish }}
+        toPublish: $(buildToPublish)
         artifactName: $(buildArtifactName)
   - job: quality
     displayName: 'Quality'
@@ -117,8 +68,8 @@ stages:
       parameters:
         jdkVersion: ${{ parameters.jdkVersion }}
         options: $(mvnTestOptions)
-        testResultsFiles: ${{ parameters.mvnTestResultsFiles }}
-        testRunTitle: ${{ parameters.mvnTestRunTitle }}
+        testResultsFiles: $(mvnTestResultsFiles)
+        testRunTitle: ''
     - template: /templates/generic/step-quality-sonar.yml
   - job: security
     displayName: 'Security'
@@ -132,25 +83,25 @@ stages:
     - template: /templates/generic/step-sca-whitesource.yml
       parameters:
         pkgFeed: $(pkgFeed)
-        args: ${{ parameters.whitesourceArgs }}
+        args: ''
     - template: /templates/generic/step-sast-fortify.yml
       parameters:
-        buildId: ${{ parameters.fortifyBuildId }}
+        buildId: $(fortifyBuildId)
         applicationType: 'java'
-        customRules: ${{ parameters.fortifyCustomRules }}
-        scanParams: ${{ parameters.fortifyScanParams }}
-        buildAnalyzerParams: ${{ parameters.fortifyBuildAnalyzerParams }}
-        classPath: ${{ parameters.fortifyClassPath }}
-        sourceVersion: ${{ parameters.fortifySourceVersion }}
-        sourcePath: ${{ parameters.fortifySourcePath }}
-        buildOptions: ${{ parameters.fortifyBuildOptions }}
-        sourceTranslate: ${{ parameters.fortifySourceTranslate }}
-        otherTranslate: ${{ parameters.fortifyOtherTranslate }}
-        appName: ${{ parameters.fortifyAppName }}
-        appVersion: ${{ parameters.fortifyAppVersion }}
-        sscProxyUrl: ${{ parameters.fortifySscProxyUrl }}
-        sscProxyUser: ${{ parameters.fortifySscProxyUser }}
-        sscProxyPass: ${{ parameters.fortifySscProxyPass }}
+        customRules: ''
+        scanParams: ''
+        buildAnalyzerParams: ''
+        classPath: ''
+        sourceVersion: $(fortifySourceVersion)
+        sourcePath: ''
+        buildOptions: ''
+        sourceTranslate: ''
+        otherTranslate: ''
+        appName: $(fortifyAppName)
+        appVersion: $(fortifyAppVersion)
+        sscProxyUrl: ''
+        sscProxyUser: ''
+        sscProxyPass: ''
   - job: package
     displayName: 'Package'
     pool:
@@ -173,7 +124,7 @@ stages:
         options: $(mvnPkgOptions)
     - template: /templates/generic/step-publish-pipeline-artifact.yml          
       parameters:
-        toPublish: ${{ parameters.packageToPublish }}
+        toPublish: $(packageToPublish)
         artifactName: 'package'
 
 - stage: deployApplication
