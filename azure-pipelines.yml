@@ -3,23 +3,196 @@ variables:
   vmImage: 'ubuntu-latest'
   pkgFeed: 'Playground/java-demo'
   buildArtifactName: 'drop'
-
-trigger:
-- master
-
-resources:
-  repositories:
-  - repository: templates
-    name: "Playground/pattern-library"
-    type: git
-    ref: rev
+  mvnTestOptions: '-DruntimeProduct=MULE'
+  mvnPkgOptions: '-DskipTests=true'
+  
+parameters:
+- name: jdkVersion #x where version is 1.x
+  type: number
+  default: 11
+  values:
+    - 6 #lts
+    - 7 #preinstalled
+    - 8 #preinstalled
+    - 11 #preinstalled
+    - 12 #preinstalled
+- name: mvnCmdOptions #command line options
+  type: string
+  default: ''
+- name: buildToPublish
+  type: string
+- name: mvnTestResultsFiles
+  type: string
+  default: '**/TEST-*.xml'
+- name: mvnTestRunTitle
+  type: string
+  default: ''
+- name: fortifyBuildId
+  type: string
+  default: $(Build.BuildId)
+- name: fortifyCustomRules
+  type: string
+  default: ''
+- name: fortifyScanParams
+  type: string
+  default: '' #scan command line args
+- name: fortifyBuildAnalyzerParams
+  type: string
+  default: '' #build options
+- name: fortifyClassPath #java only
+  type: string
+  default: ''
+- name: fortifySourceVersion
+  type: string
+  default: '8'
+- name: fortifySourcePath
+  type: string
+  default: ''
+- name: fortifyBuildOptions
+  type: string
+  default: ''
+- name: fortifySourceTranslate
+  type: string
+  default: ''
+- name: fortifyOtherTranslate
+  type: string
+  default: ''
+- name: fortifyAppName
+  type: string
+  default: ''
+- name: fortifyAppVersion
+  type: string
+  default: ''
+- name: fortifySscProxyUrl
+  type: string
+  default: ''
+- name: fortifySscProxyUser
+  type: string
+  default: ''
+- name: fortifySscProxyPass
+  type: string
+  default: ''
+- name: whitesourceArgs #add commandline arguments ie -d directory/to/scan (defaults to pwd)
+  type: string
+  default: ''
+- name: packageToPublish
+  type: string
 
 stages:
-- ${{ if eq(variables.build, 'maven') }}:
-  - template: pattern-java-maven-package.yml@templates
-    parameters:
-      buildToPublish: '**/*'
-      packageToPublish: '**/*.jar'
-      fortifyAppName: 'java-test'
-      fortifyAppVersion: '1.1'
-      mvnCmdOptions: '-DruntimeProduct=MULE -Dmaven.repo.local=$(Pipeline.Workspace)/.m2/repository'
+- stage: buildApplication
+  displayName: 'Build Application'
+  jobs:
+  - job: build
+    displayName: 'Build'
+    pool:
+      vmImage: $(vmImage)
+    steps:
+    - template: /templates/java-maven/step-init.yml
+      parameters:
+        pkgFeed: $(pkgFeed)
+        jdkVersion: ${{ parameters.jdkVersion }}
+    - template: /templates/java-maven/step-compile.yml
+      parameters:
+        jdkVersion: ${{ parameters.jdkVersion }}
+        options: ${{ parameters.mvnCmdOptions }}
+    - template: /templates/generic/step-publish-pipeline-artifact.yml          
+      parameters:
+        toPublish: ${{ parameters.buildToPublish }}
+        artifactName: $(buildArtifactName)
+  - job: quality
+    displayName: 'Quality'
+    pool:
+      vmImage: $(vmImage)
+    dependsOn: build
+    condition: succeeded()
+    steps:
+    - template: /templates/generic/step-download-pipeline-artifact.yml
+      parameters:
+        buildArtifactName: $(buildArtifactName)
+    - template: /templates/java-maven/step-init.yml
+      parameters:
+        pkgFeed: $(pkgFeed)
+        jdkVersion: ${{ parameters.jdkVersion }}
+    - template: /templates/java-maven/step-ut.yml
+      parameters:
+        jdkVersion: ${{ parameters.jdkVersion }}
+        options: $(mvnTestOptions)
+        testResultsFiles: ${{ parameters.mvnTestResultsFiles }}
+        testRunTitle: ${{ parameters.mvnTestRunTitle }}
+    - template: /templates/generic/step-quality-sonar.yml
+  - job: security
+    displayName: 'Security'
+    pool: 'DevSecOps Agent Pool'
+    dependsOn: build
+    condition: succeeded()
+    steps:
+    - template: /templates/generic/step-download-pipeline-artifact.yml
+      parameters:
+        buildArtifactName: $(buildArtifactName)
+    - template: /templates/generic/step-sca-whitesource.yml
+      parameters:
+        pkgFeed: $(pkgFeed)
+        args: ${{ parameters.whitesourceArgs }}
+    - template: /templates/generic/step-sast-fortify.yml
+      parameters:
+        buildId: ${{ parameters.fortifyBuildId }}
+        applicationType: 'java'
+        customRules: ${{ parameters.fortifyCustomRules }}
+        scanParams: ${{ parameters.fortifyScanParams }}
+        buildAnalyzerParams: ${{ parameters.fortifyBuildAnalyzerParams }}
+        classPath: ${{ parameters.fortifyClassPath }}
+        sourceVersion: ${{ parameters.fortifySourceVersion }}
+        sourcePath: ${{ parameters.fortifySourcePath }}
+        buildOptions: ${{ parameters.fortifyBuildOptions }}
+        sourceTranslate: ${{ parameters.fortifySourceTranslate }}
+        otherTranslate: ${{ parameters.fortifyOtherTranslate }}
+        appName: ${{ parameters.fortifyAppName }}
+        appVersion: ${{ parameters.fortifyAppVersion }}
+        sscProxyUrl: ${{ parameters.fortifySscProxyUrl }}
+        sscProxyUser: ${{ parameters.fortifySscProxyUser }}
+        sscProxyPass: ${{ parameters.fortifySscProxyPass }}
+  - job: package
+    displayName: 'Package'
+    pool:
+      vmImage: $(vmImage)
+    dependsOn:
+    - quality
+    - security
+    condition: succeeded()
+    steps:
+    - template: /templates/generic/step-download-pipeline-artifact.yml
+      parameters:
+        buildArtifactName: $(buildArtifactName)
+    - template: /templates/java-maven/step-init.yml
+      parameters:
+        pkgFeed: $(pkgFeed)
+        jdkVersion: ${{ parameters.jdkVersion }}
+    - template: /templates/java-maven/step-package.yml
+      parameters:
+        jdkVersion: ${{ parameters.jdkVersion }}
+        options: $(mvnPkgOptions)
+    - template: /templates/generic/step-publish-pipeline-artifact.yml          
+      parameters:
+        toPublish: ${{ parameters.packageToPublish }}
+        artifactName: 'package'
+
+- stage: deployApplication
+  displayName: 'Deploy Application'
+  dependsOn: buildApplication
+  jobs:
+  - job: deploy
+    displayName: 'Deploy'
+    steps:
+    - template: /templates/generic/step-download-pipeline-artifact.yml
+- stage: verifyApplication
+  displayName: 'Verify Application'
+  dependsOn: deployApplication
+  jobs:
+  - job: security
+    displayName: 'Security'
+    steps:
+    - template: /templates/generic/step-dast-webinspect.yml
+  - job: functionalTest
+    displayName: 'Functional Test'
+    steps:
+    - template: /templates/generic/step-ft-tosca.yml
