@@ -4,7 +4,7 @@ variables:
   vmImage: 'ubuntu-latest'
   pkgFeed: 'Playground/java-demo'
   buildArtifactName: 'drop'
-  jdkVersion: 11
+  jdkVersion: '11'
   
   #Maven options
   mvnTestOptions: '-DruntimeProduct=MULE'
