@@ -28,6 +28,8 @@ parameters:
     - 8 #preinstalled
     - 11 #preinstalled
     - 12 #preinstalled
+trigger:
+- master
 
 resources:
   repositories:
