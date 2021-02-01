@@ -1,13 +1,15 @@
 variables:
+  #Project Options
   build: 'maven'
   vmImage: 'ubuntu-latest'
   pkgFeed: 'Playground/java-demo'
   buildArtifactName: 'drop'
+  jdkVersion: 11
   
   #Maven options
   mvnTestOptions: '-DruntimeProduct=MULE'
   mvnCompileOptions: '-DruntimeProduct=MULE'
-  mvnPkgOptions: '-DskipTests=true'
+  mvnPkgOptions: '-DruntimeProduct=MULE'
   buildToPublish: '**/*'
   packageToPublish: '**/*.jar'
   mvnTestResultsFiles: '**/TEST-*.xml'
@@ -18,16 +20,6 @@ variables:
   fortifyBuildId: $(Build.BuildId)
   fortifySourceVersion: '8'
   
-parameters:
-- name: jdkVersion #x where version is 1.x
-  type: number
-  default: 11
-  values:
-    - 6 #lts
-    - 7 #preinstalled
-    - 8 #preinstalled
-    - 11 #preinstalled
-    - 12 #preinstalled
     
 trigger:
 - master
