@@ -43,7 +43,7 @@ stages:
     - template: /templates/java-maven/step-init.yml@templates
       parameters:
         pkgFeed: $(pkgFeed)
-        jdkVersion: '${{ variables.jdkVersion }}'
+        jdkVersion: ${{ variables.jdkVersion }}
     - template: /templates/java-maven/step-compile.yml@templates
       parameters:
         jdkVersion: '${{ variables.jdkVersion }}'
