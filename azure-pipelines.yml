@@ -43,7 +43,7 @@ stages:
     - template: /templates/java-maven/step-init.yml@templates
       parameters:
         pkgFeed: $(pkgFeed)
-        jdkVersion: ${parameters.jdkVersion}
+        jdkVersion: $(fortifySourceVersion)
     - template: /templates/java-maven/step-compile.yml@templates
       parameters:
         jdkVersion: $(jdkVersion)
