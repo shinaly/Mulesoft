@@ -43,10 +43,10 @@ stages:
     - template: /templates/java-maven/step-init.yml@templates
       parameters:
         pkgFeed: $(pkgFeed)
-        jdkVersion: ${{ parameters.jdkVersion }}
+        jdkVersion: $(jdkVersion)
     - template: /templates/java-maven/step-compile.yml@templates
       parameters:
-        jdkVersion: ${{ parameters.jdkVersion }}
+        jdkVersion: $(jdkVersion)
         options: $(mvnCompileOptions)
     - template: /templates/generic/step-publish-pipeline-artifact.yml@templates          
       parameters:
@@ -65,10 +65,10 @@ stages:
     - template: /templates/java-maven/step-init.yml@templates
       parameters:
         pkgFeed: $(pkgFeed)
-        jdkVersion: ${{ parameters.jdkVersion }}
+        jdkVersion: $(jdkVersion)
     - template: /templates/java-maven/step-ut.yml@templates
       parameters:
-        jdkVersion: ${{ parameters.jdkVersion }}
+        jdkVersion: $(jdkVersion)
         options: $(mvnTestOptions)
         testResultsFiles: $(mvnTestResultsFiles)
         testRunTitle: ''
@@ -119,10 +119,10 @@ stages:
     - template: /templates/java-maven/step-init.yml@templates
       parameters:
         pkgFeed: $(pkgFeed)
-        jdkVersion: ${{ parameters.jdkVersion }}
+        jdkVersion: $(jdkVersion)
     - template: /templates/java-maven/step-package.yml@templates
       parameters:
-        jdkVersion: ${{ parameters.jdkVersion }}
+        jdkVersion: $(jdkVersion)
         options: $(mvnPkgOptions)
     - template: /templates/generic/step-publish-pipeline-artifact.yml@templates          
       parameters:
