@@ -29,6 +29,13 @@ parameters:
     - 11 #preinstalled
     - 12 #preinstalled
 
+resources:
+  repositories:
+  - repository: templates
+    name: "Playground/pattern-library"
+    type: git
+    ref: rev
+
 stages:
 - stage: buildApplication
   displayName: 'Build Application'
