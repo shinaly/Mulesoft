@@ -38,24 +38,24 @@ stages:
   - job: build
     displayName: 'Build'
     pool:
-      vmImage: $(vmImage)
+      vmImage: ${{ variables.vmImage}}
     steps:
     - template: /templates/java-maven/step-init.yml@templates
       parameters:
-        pkgFeed: $(pkgFeed)
+        pkgFeed: ${{ variables.pkgFeed}}
         jdkVersion: ${{ variables.jdkVersion }}
     - template: /templates/java-maven/step-compile.yml@templates
       parameters:
-        jdkVersion: '${{ variables.jdkVersion }}'
-        options: $(mvnCompileOptions)
+        jdkVersion: ${{ variables.jdkVersion }}
+        options: ${{ variables.mvnCompileOptions}}
     - template: /templates/generic/step-publish-pipeline-artifact.yml@templates          
       parameters:
-        toPublish: $(buildToPublish)
-        artifactName: $(buildArtifactName)
+        toPublish: ${{ variables.buildToPublish}}
+        artifactName: ${{ variables.buildArtifactName}}
   - job: quality
     displayName: 'Quality'
     pool:
-      vmImage: $(vmImage)
+      vmImage: ${{ variables.vmImage}}
     dependsOn: build
     condition: succeeded()
     steps:
@@ -64,13 +64,13 @@ stages:
         buildArtifactName: $(buildArtifactName)
     - template: /templates/java-maven/step-init.yml@templates
       parameters:
-        pkgFeed: $(pkgFeed)
-        jdkVersion: '${{ variables.jdkVersion }}'
+        pkgFeed: ${{ variables.pkgFeed }}
+        jdkVersion: ${{ variables.jdkVersion }}
     - template: /templates/java-maven/step-ut.yml@templates
       parameters:
-        jdkVersion: '${{ variables.jdkVersion }}'
-        options: $(mvnTestOptions)
-        testResultsFiles: $(mvnTestResultsFiles)
+        jdkVersion: ${{ variables.jdkVersion }}
+        options: ${{ variables.mvnTestOptions}}
+        testResultsFiles: ${{ variables.mvnTestResultsFiles}}
         testRunTitle: ''
     - template: /templates/generic/step-quality-sonar.yml@templates
   - job: security
@@ -81,33 +81,33 @@ stages:
     steps:
     - template: /templates/generic/step-download-pipeline-artifact.yml@templates
       parameters:
-        buildArtifactName: $(buildArtifactName)
+        buildArtifactName: ${{ variables.buildArtifactName}}
     - template: /templates/generic/step-sca-whitesource.yml@templates
       parameters:
-        pkgFeed: $(pkgFeed)
+        pkgFeed: ${{ variables.pkgFeed }}
         args: ''
     - template: /templates/generic/step-sast-fortify.yml@templates
       parameters:
-        buildId: $(fortifyBuildId)
+        buildId: ${{ variables.fortifyBuildId}}
         applicationType: 'java'
         customRules: ''
         scanParams: ''
         buildAnalyzerParams: ''
         classPath: ''
-        sourceVersion: $(fortifySourceVersion)
+        sourceVersion: ${{ variables.fortifySourceVersion}}
         sourcePath: ''
         buildOptions: ''
         sourceTranslate: ''
         otherTranslate: ''
-        appName: $(fortifyAppName)
-        appVersion: $(fortifyAppVersion)
+        appName: ${{ variables.fortifyAppName}}
+        appVersion: ${{ variables.fortifyAppVersion}}
         sscProxyUrl: ''
         sscProxyUser: ''
         sscProxyPass: ''
   - job: package
     displayName: 'Package'
     pool:
-      vmImage: $(vmImage)
+      vmImage: ${{ variables.vmImage}}
     dependsOn:
     - quality
     - security
@@ -115,18 +115,18 @@ stages:
     steps:
     - template: /templates/generic/step-download-pipeline-artifact.yml@templates
       parameters:
-        buildArtifactName: $(buildArtifactName)
+        buildArtifactName: ${{ variables.buildArtifactName}}
     - template: /templates/java-maven/step-init.yml@templates
       parameters:
-        pkgFeed: $(pkgFeed)
-        jdkVersion: '${{ variables.jdkVersion }}'
+        pkgFeed: ${{ variables.pkgFeed }}
+        jdkVersion: ${{ variables.jdkVersion }}
     - template: /templates/java-maven/step-package.yml@templates
       parameters:
-        jdkVersion: '${{ variables.jdkVersion }}'
-        options: $(mvnPkgOptions)
+        jdkVersion: ${{ variables.jdkVersion }}
+        options: ${{ variables.mvnPkgOptions}}
     - template: /templates/generic/step-publish-pipeline-artifact.yml@templates          
       parameters:
-        toPublish: $(packageToPublish)
+        toPublish: ${{ variables.packageToPublish}}
         artifactName: 'package'
 
 - stage: deployApplication
