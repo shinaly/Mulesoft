@@ -28,6 +28,7 @@ parameters:
     - 8 #preinstalled
     - 11 #preinstalled
     - 12 #preinstalled
+    
 trigger:
 - master
 
@@ -47,15 +48,15 @@ stages:
     pool:
       vmImage: $(vmImage)
     steps:
-    - template: /templates/java-maven/step-init.yml
+    - template: /templates/java-maven/step-init.yml@templates
       parameters:
         pkgFeed: $(pkgFeed)
         jdkVersion: ${{ parameters.jdkVersion }}
-    - template: /templates/java-maven/step-compile.yml
+    - template: /templates/java-maven/step-compile.yml@templates
       parameters:
         jdkVersion: ${{ parameters.jdkVersion }}
         options: $(mvnCompileOptions)
-    - template: /templates/generic/step-publish-pipeline-artifact.yml          
+    - template: /templates/generic/step-publish-pipeline-artifact.yml@templates          
       parameters:
         toPublish: $(buildToPublish)
         artifactName: $(buildArtifactName)
@@ -66,34 +67,34 @@ stages:
     dependsOn: build
     condition: succeeded()
     steps:
-    - template: /templates/generic/step-download-pipeline-artifact.yml
+    - template: /templates/generic/step-download-pipeline-artifact.yml@templates
       parameters:
         buildArtifactName: $(buildArtifactName)
-    - template: /templates/java-maven/step-init.yml
+    - template: /templates/java-maven/step-init.yml@templates
       parameters:
         pkgFeed: $(pkgFeed)
         jdkVersion: ${{ parameters.jdkVersion }}
-    - template: /templates/java-maven/step-ut.yml
+    - template: /templates/java-maven/step-ut.yml@templates
       parameters:
         jdkVersion: ${{ parameters.jdkVersion }}
         options: $(mvnTestOptions)
         testResultsFiles: $(mvnTestResultsFiles)
         testRunTitle: ''
-    - template: /templates/generic/step-quality-sonar.yml
+    - template: /templates/generic/step-quality-sonar.yml@templates
   - job: security
     displayName: 'Security'
     pool: 'DevSecOps Agent Pool'
     dependsOn: build
     condition: succeeded()
     steps:
-    - template: /templates/generic/step-download-pipeline-artifact.yml
+    - template: /templates/generic/step-download-pipeline-artifact.yml@templates
       parameters:
         buildArtifactName: $(buildArtifactName)
-    - template: /templates/generic/step-sca-whitesource.yml
+    - template: /templates/generic/step-sca-whitesource.yml@templates
       parameters:
         pkgFeed: $(pkgFeed)
         args: ''
-    - template: /templates/generic/step-sast-fortify.yml
+    - template: /templates/generic/step-sast-fortify.yml@templates
       parameters:
         buildId: $(fortifyBuildId)
         applicationType: 'java'
@@ -120,18 +121,18 @@ stages:
     - security
     condition: succeeded()
     steps:
-    - template: /templates/generic/step-download-pipeline-artifact.yml
+    - template: /templates/generic/step-download-pipeline-artifact.yml@templates
       parameters:
         buildArtifactName: $(buildArtifactName)
-    - template: /templates/java-maven/step-init.yml
+    - template: /templates/java-maven/step-init.yml@templates
       parameters:
         pkgFeed: $(pkgFeed)
         jdkVersion: ${{ parameters.jdkVersion }}
-    - template: /templates/java-maven/step-package.yml
+    - template: /templates/java-maven/step-package.yml@templates
       parameters:
         jdkVersion: ${{ parameters.jdkVersion }}
         options: $(mvnPkgOptions)
-    - template: /templates/generic/step-publish-pipeline-artifact.yml          
+    - template: /templates/generic/step-publish-pipeline-artifact.yml@templates          
       parameters:
         toPublish: $(packageToPublish)
         artifactName: 'package'
@@ -143,7 +144,7 @@ stages:
   - job: deploy
     displayName: 'Deploy'
     steps:
-    - template: /templates/generic/step-download-pipeline-artifact.yml
+    - template: /templates/generic/step-download-pipeline-artifact.yml@templates
 - stage: verifyApplication
   displayName: 'Verify Application'
   dependsOn: deployApplication
@@ -151,8 +152,8 @@ stages:
   - job: security
     displayName: 'Security'
     steps:
-    - template: /templates/generic/step-dast-webinspect.yml
+    - template: /templates/generic/step-dast-webinspect.yml@templates
   - job: functionalTest
     displayName: 'Functional Test'
     steps:
-    - template: /templates/generic/step-ft-tosca.yml
+    - template: /templates/generic/step-ft-tosca.yml@templates
