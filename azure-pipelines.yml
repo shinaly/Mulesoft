@@ -10,7 +10,7 @@ variables:
   mvnTestOptions: '-DruntimeProduct=MULE'
   mvnCompileOptions: '-DruntimeProduct=MULE'
   mvnPkgOptions: '-DruntimeProduct=MULE'
-  buildToPublish: '**/*.class'
+  buildToPublish: '**/*.xml'
   packageToPublish: '**/*.jar'
   mvnTestResultsFiles: '**/TEST-*.xml'
   
