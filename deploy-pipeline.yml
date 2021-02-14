@@ -1,34 +1,27 @@
-variables:
-  vmImage: 'ubuntu-latest'
 
-stages:
-- stage: buildApplication
-  displayName: 'Build Application'
-  jobs:
-  - job: deploy
-    displayName: 'deploy'
-    pool:
-      vmImage: ${{ variables.vmImage}}
-    steps:
-    - task: UniversalPackages@0
-      inputs:
-        command: 'download'
-        downloadDirectory: '$(System.DefaultWorkingDirectory)/webapp'
-        feedsToUse: 'internal'
-        vstsFeed: '99915759-d6a6-44bf-be21-c36fdd5a094c/ab05426b-b330-44b0-aa98-a0d5effd2b0a'
-        vstsFeedPackage: '573a6f27-4ec2-42ba-aa4d-c7c3606f4614'
-        vstsPackageVersion: '0.0.1'
-        
-    - task: IBMWebSphere@1
-      inputs:
-        connType: 'address'
-        username: 'wasadmin'
-        ipAddress: '40.115.64.252'
-        port: '8880'
-        appName: 'test_app'
-        contentPath: '$(System.DefaultWorkingDirectory)/webapp/*.war'
-        installApplicationIfNotExist: true
-        nodeName: 'AppSrv'
-        appServerName: 'AppSrv'
-        cellName: 'cell01'
-        contextRoot: '/'   
+pool:
+  vmImage: 'ubuntu-latest'
+  
+steps:
+- task: UniversalPackages@0
+  inputs:
+    command: 'download'
+    downloadDirectory: '$(System.DefaultWorkingDirectory)/webapp'
+    feedsToUse: 'internal'
+    vstsFeed: '99915759-d6a6-44bf-be21-c36fdd5a094c/ab05426b-b330-44b0-aa98-a0d5effd2b0a'
+    vstsFeedPackage: '573a6f27-4ec2-42ba-aa4d-c7c3606f4614'
+    vstsPackageVersion: '0.0.1'
+    
+- task: IBMWebSphere@1
+  inputs:
+    connType: 'address'
+    username: 'wasadmin'
+    ipAddress: '40.115.64.252'
+    port: '8880'
+    appName: 'test_app'
+    contentPath: '$(System.DefaultWorkingDirectory)/webapp/*.war'
+    installApplicationIfNotExist: true
+    nodeName: 'AppSrv'
+    appServerName: 'AppSrv'
+    cellName: 'cell01'
+    contextRoot: '/'   
