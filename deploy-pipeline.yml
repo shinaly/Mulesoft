@@ -15,7 +15,6 @@ steps:
 - task: IBMWebSphere@1
   inputs:
     connType: 'address'
-    username: 'wasadmin'
     ipAddress: '40.115.64.252'
     port: '8880'
     appName: 'test_app'
