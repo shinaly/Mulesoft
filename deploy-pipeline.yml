@@ -3,8 +3,8 @@ stages:
 - stage: buildApplication
   displayName: 'Build Application'
   jobs:
-  - job: build
-    displayName: 'Build'
+  - job: deploy
+    displayName: 'deploy'
     pool:
       vmImage: ${{ variables.vmImage}}
     steps:
