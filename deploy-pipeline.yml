@@ -34,7 +34,7 @@ stages:
                     appServerName: 'AppServer'
                     cellName: 'cell01'
                     contextRoot: '/demo'
-                    webModule: 'SampleWebApp.war,WEB-INF/web.xml'
+                    webModule: 'SampleWebApp.war'
                     uri: 'SampleWebApp.war,WEB-INF/web.xml'  
 
 
