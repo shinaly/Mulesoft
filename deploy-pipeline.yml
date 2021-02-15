@@ -27,10 +27,15 @@ stages:
                     connType: 'address'
                     ipAddress: '40.115.64.252'
                     port: '8880'
-                    appName: 'test_app'
-                    contentPath: '$(System.DefaultWorkingDirectory)/webapp/*.war'
+                    appName: 'SampleWebApp_war'
+                    contentPath: '**/*.war'
                     installApplicationIfNotExist: true
                     nodeName: 'AppSrv'
-                    appServerName: 'AppSrv'
+                    appServerName: 'AppServer'
                     cellName: 'cell01'
-                    contextRoot: '/'   
+                    contextRoot: '/demo'
+                    webModule: 'SampleWebApp.war,WEB-INF/web.xml'
+                    uri: 'SampleWebApp.war,WEB-INF/web.xml'  
+
+
+                    
