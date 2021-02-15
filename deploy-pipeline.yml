@@ -28,7 +28,7 @@ stages:
                     ipAddress: '40.115.64.252'
                     port: '8880'
                     appName: 'SampleWebApp_war'
-                    contentPath: '**/*.war'
+                    contentPath: '$(System.DefaultWorkingDirectory)/webapp/*.war'
                     installApplicationIfNotExist: true
                     nodeName: 'AppSrv'
                     appServerName: 'AppServer'
